@@ -11,6 +11,17 @@ CSIT5730 Suggestion 2: a host IDS for a 1 GiB Debian VPS, with an optional off-h
 
 ## Build and Test
 
+The recommended development path is [the pinned devenv environment](./ENVIRONMENT.md). On an x86-64 Linux analyst machine with Nix and devenv installed:
+
+```sh
+devenv test
+devenv shell -- tt-bundle
+```
+
+The first command compiles the local tools and runs the deterministic tests. The second builds a separate Debian-compatible archive; do not copy the native Nix binaries to the VPS. Neither command needs VPS credentials or an LLM endpoint. See the [deployment checklist](./ENVIRONMENT.md#target-checklist) for the external host requirements.
+
+### Without devenv
+
 Build on a Debian machine with the same architecture as the target. Native build dependencies: `clang`, `bpftool`, `gcc`, `libc6-dev`, `libbpf-dev`, `linux-libc-dev`, `make`.
 
 ```sh

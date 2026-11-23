@@ -55,6 +55,14 @@ dkms.conf
 *.dwo
 
 /build/
-/node_modules/
+/node_modules
 /results/
 __pycache__/
+/.devenv/
+/.direnv/
+/devenv.local.nix
+/devenv.local.yaml
+/devenv.override.nix
+/.env
+/.env.local
+/.env.*.local
