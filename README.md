@@ -1,6 +1,6 @@
 # TraceTriage
 
-CSIT5730 Suggestion 2: a host IDS for a 1 GiB Debian VPS, with an optional off-host triage agent. See the [assignment](./PROJECT.md), [project outline](./OUTLINE.md), and [measured results](./EVALUATION.md).
+CSIT5730 Suggestion 2: a host IDS for a 1 GiB Debian VPS, with an optional off-host triage agent. See the [assignment](./PROJECT.md), [project outline](./OUTLINE.md), [initial VPS results](./EVALUATION.md), and [semantic routing evaluation](./SEMANTIC-EVALUATION.md).
 
 ## Data Flow
 
@@ -47,6 +47,27 @@ TRIAGE_BASE_URL=https://your-model-endpoint.example/v1 TRIAGE_MODEL=your-model \
 ```
 
 The same frozen cases and two-read limit apply to fixed ancestry, fixed destinations, and adaptive Pi. A deterministic profile router is an additional control: matching it is not evidence that a model is necessary. The report distinguishes retained-alert recall (including manual review) from explicit suspicious recall; a routine case sent to review still counts as a retained false alert. Without a labels file, replay returns verdicts but does not estimate labeled performance.
+
+## Semantic Routing Benchmark
+
+The follow-up removes the machine-readable “check this source” field. A prose change bulletin and a current operator handoff determine which of eight verifiers is relevant. Pi and a calibrated lexical/TF-IDF router see the same text and choose at most one verifier. Identical deterministic code checks that the selected receipt is bound to the applicable authorization; the model cannot clear the alert itself.
+
+Use the same off-host build and target prerequisites as above. On the target, run as root in an isolated test environment, then copy the capture to the analyst machine:
+
+```sh
+python3 -m ids.corpus_capture --cases 144 --output results/semantic-vps
+```
+
+On the analyst machine, use the checked-in textual corpus and generated receipt fixtures:
+
+```sh
+node analyst/semantic-replay.mjs --capture results/semantic-vps/capture.jsonl > baseline.json
+# Set TRIAGE_BASE_URL, TRIAGE_MODEL, and TRIAGE_API_KEY as in Analyst Replay.
+node analyst/semantic-replay.mjs --capture results/semantic-vps/capture.jsonl \
+  --live --concurrency 8 > heldout-live.json
+```
+
+Use `--split dev` (no capture needed) to try a provider without using the holdout. The default holdout includes 16 disjoint scenario families; use the reported corpus fingerprint to reproduce the same labels. The VPS alerts are real, but the incident narratives, labels, and the eight verifier receipts are controlled analyst-side fixtures, not real infrastructure integrations. The original local detection path is unchanged.
 
 ## Limitations
 

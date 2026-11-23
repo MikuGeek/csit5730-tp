@@ -1,5 +1,7 @@
 # TraceTriage — VPS Evaluation
 
+This is the initial structured-profile experiment. The [semantic routing follow-up](./SEMANTIC-EVALUATION.md) tests whether an LLM can select evidence when that profile no longer gives away the answer.
+
 ## Setup
 
 - Debian 13.7, x86-64, Linux `6.12.101+deb13-amd64`, 967 MiB visible RAM.

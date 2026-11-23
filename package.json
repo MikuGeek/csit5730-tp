@@ -6,7 +6,8 @@
   "engines": { "node": ">=22.19.0" },
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "replay": "node analyst/replay.mjs"
+    "replay": "node analyst/replay.mjs",
+    "semantic": "node analyst/semantic-replay.mjs"
   },
   "dependencies": {
     "@earendil-works/pi-agent-core": "1.6.0",
