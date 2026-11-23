@@ -53,3 +53,8 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+/build/
+/node_modules/
+/results/
+__pycache__/
