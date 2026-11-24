@@ -2,7 +2,7 @@
 
 CSIT5730 Suggestion 2: a host IDS for a 1 GiB Debian VPS, with an optional off-host triage agent. See the [assignment](./PROJECT.md), [project outline](./OUTLINE.md), [initial VPS results](./EVALUATION.md), and [semantic routing evaluation](./SEMANTIC-EVALUATION.md).
 
-Course presentation: [Touying slides](./slides/main.typ) · [ten-minute speaker guide](./slides/talk.md) · [build instructions](./ENVIRONMENT.md#build-the-slides).
+Course presentation: [Pre Alpha PDF](./slides/exports/tracetriage-pre-alpha.pdf) · [Touying slides](./slides/main.typ) · [ten-minute speaker guide](./slides/talk.md) · [build instructions](./ENVIRONMENT.md#build-the-slides).
 
 ## Data Flow
 

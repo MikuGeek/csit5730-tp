@@ -27,6 +27,8 @@ devenv shell -- tt-slides
 
 This compiles [`slides/main.typ`](./slides/main.typ) to `build/slides/tracetriage.pdf`. The [Material-themed slides](./slides/theme.typ) use IBM Plex Serif from the locked nixpkgs input. The compiler ignores system fonts. Nix pins Touying, Fletcher and CeTZ (architecture and flow diagrams), Lilaq (measurements), and their required dependencies by hash. Compilation needs no package downloads, VPS, raw results, or model credentials. See the [ten-minute speaker guide](./slides/talk.md) and [project skill](./.agents/skills/tracetriage-slides/SKILL.md).
 
+The checked-in [Pre Alpha PDF](./slides/exports/tracetriage-pre-alpha.pdf) is a snapshot. Normal builds leave it untouched.
+
 ## Build a Debian Bundle
 
 ```sh
