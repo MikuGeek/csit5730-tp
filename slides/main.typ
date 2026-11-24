@@ -1,9 +1,10 @@
 #import "theme.typ": deck, cover, claim, card, flow, ledger, comparison, note, evidence, excerpt
 #import "maps.typ" as maps
 #show: deck
-#set document(title: "TraceTriage — An eBPF IDS for a small Debian host")
+#let version = "Pre Alpha"
+#set document(title: "TraceTriage — " + version)
 
-#cover[TraceTriage][An eBPF intrusion detector for a small Debian host][One process attempts eight distinct destinations in ten seconds.][Would you wake up the operator?][Kernel events → local warning → evidence check]
+#cover(version)[TraceTriage][An eBPF intrusion detector for a small Debian host][One process attempts eight distinct destinations in ten seconds.][Would you wake up the operator?][Kernel events → local warning → evidence check]
 
 = Our design question
 #claim[What can a 1 GiB host decide on its own?]

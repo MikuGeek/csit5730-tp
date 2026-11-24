@@ -38,9 +38,9 @@
   body
 }
 
-#let cover(title, subtitle, incident, question, stages) = title-slide(config: config-page(fill: primary) + config-common(freeze-slide-counter: false))[
+#let cover(version, title, subtitle, incident, question, stages) = title-slide(config: config-page(fill: primary) + config-common(freeze-slide-counter: false))[
   #align(left, stack(dir: ttb, spacing: 2.5 * unit,
-    chip([CSIT5730  /  SUGGESTION 2]), display(title),
+    chip[CSIT5730  /  SUGGESTION 2  /  #version], display(title),
     role(28pt, "regular", on-primary, subtitle),
     panel(fill: primary-container, stack(dir: ttb, spacing: unit,
       label([OPENING CASE  /  FAN-OUT]), body-type(incident),
