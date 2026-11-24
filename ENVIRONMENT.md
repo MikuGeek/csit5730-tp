@@ -19,6 +19,14 @@ tt-semantic --split dev
 
 `tt-build` writes native binaries to `build/native/`; they may reference the Nix store. `tt-setup` links only the Nix-managed `node_modules`. If you previously ran `npm ci`, move your existing `node_modules` directory outside the repo before using `tt-setup`. For optional direnv activation, run `direnv allow` after reviewing `.envrc`. Outside the shell, prefix individual tasks with `devenv shell --`, e.g. `devenv shell -- tt-test`.
 
+## Build the Slides
+
+```sh
+devenv shell -- tt-slides
+```
+
+This compiles [`slides/main.typ`](./slides/main.typ) to `build/slides/tracetriage.pdf`. The [Material-themed slides](./slides/theme.typ) use IBM Plex Serif from the locked nixpkgs input. The compiler ignores system fonts. Nix fetches Touying 0.8.0, Lilaq 0.6.0 and the Typst dependencies used by the deck by hash; compilation needs no package downloads, VPS, raw results, or model credentials. For slide updates, see the [project skill](./.agents/skills/tracetriage-slides/SKILL.md).
+
 ## Build a Debian Bundle
 
 ```sh

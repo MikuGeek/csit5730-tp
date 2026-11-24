@@ -3,6 +3,22 @@
 let
   clang = pkgs.llvmPackages.clang-unwrapped;
   node = pkgs.nodejs_22;
+  typstArchive = package: hash: pkgs.fetchurl {
+    url = "https://packages.typst.org/preview/${package}.tar.gz";
+    inherit hash;
+  };
+  unpackPreview = name: version: hash: ''
+    mkdir -p "$out/preview/${name}/${version}"
+    tar -xzf ${typstArchive "${name}-${version}" hash} -C "$out/preview/${name}/${version}"
+  '';
+  slidePackages = pkgs.runCommand "tracetriage-typst-packages" { } (lib.concatStrings [
+    (unpackPreview "touying" "0.8.0" "sha256-f+nu7sxWFPIe5k/+lcFB02qxrgtOyWHm6r8Tq4de9cE=")
+    (unpackPreview "uniwarn" "0.1.1" "sha256-aCR0MtqxsWXBYFVBHA8OwVSmPX/PXvD2WQYmlpXTaOo=")
+    (unpackPreview "lilaq" "0.6.0" "sha256-QeeDnp5Or1wLXsk/I9OHIzvOQ5/iJjJrBsL6AfL8JR8=")
+    (unpackPreview "elembic" "1.1.1" "sha256-46jsayrV9D2TrjHdV0LeclbFdxlnVjYXnNgY8mynu4g=")
+    (unpackPreview "tiptoe" "0.4.0" "sha256-G+dywzWQKnVUtRZKWkFFv9iGhnrBsmR4t01eS/nraz8=")
+    (unpackPreview "zero" "0.6.1" "sha256-h//sDVkVUatdFGXEBYLkRBh23Y9w74ii1Xcpf1l3do8=")
+  ]);
   npmSource = lib.fileset.toSource {
     root = ./.;
     fileset = lib.fileset.unions [ ./package.json ./package-lock.json ];
@@ -29,6 +45,10 @@ let
   '';
 in
 {
+  languages.typst = {
+    enable = true;
+  };
+
   packages = with pkgs; [
     bashInteractive
     binutils
@@ -108,6 +128,16 @@ in
     description = "Build and archive Debian-compatible sensor binaries for x86-64";
     exec = inRoot + ''
       exec bash scripts/bundle-debian.sh "$@"
+    '';
+  };
+
+  scripts.tt-slides = {
+    description = "Compile the Touying course presentation to build/slides/tracetriage.pdf";
+    exec = inRoot + ''
+      mkdir -p build/slides
+      exec typst compile --ignore-system-fonts --font-path ${pkgs.ibm-plex}/share/fonts \
+        --package-path ${slidePackages} \
+        slides/main.typ build/slides/tracetriage.pdf
     '';
   };
 
