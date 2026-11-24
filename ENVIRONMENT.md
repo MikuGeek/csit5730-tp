@@ -25,7 +25,7 @@ tt-semantic --split dev
 devenv shell -- tt-slides
 ```
 
-This compiles [`slides/main.typ`](./slides/main.typ) to `build/slides/tracetriage.pdf`. The [Material-themed slides](./slides/theme.typ) use IBM Plex Serif from the locked nixpkgs input. The compiler ignores system fonts. Nix fetches Touying 0.8.0, Lilaq 0.6.0 and the Typst dependencies used by the deck by hash; compilation needs no package downloads, VPS, raw results, or model credentials. For slide updates, see the [project skill](./.agents/skills/tracetriage-slides/SKILL.md).
+This compiles [`slides/main.typ`](./slides/main.typ) to `build/slides/tracetriage.pdf`. The [Material-themed slides](./slides/theme.typ) use IBM Plex Serif from the locked nixpkgs input. The compiler ignores system fonts. Nix pins Touying, Fletcher and CeTZ (architecture and flow diagrams), Lilaq (measurements), and their required dependencies by hash. Compilation needs no package downloads, VPS, raw results, or model credentials. See the [ten-minute speaker guide](./slides/talk.md) and [project skill](./.agents/skills/tracetriage-slides/SKILL.md).
 
 ## Build a Debian Bundle
 

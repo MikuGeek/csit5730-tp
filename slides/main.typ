@@ -1,4 +1,5 @@
-#import "theme.typ": deck, cover, claim, card, flow, rows, lane, lanes, ledger, comparison, note
+#import "theme.typ": deck, cover, claim, card, flow, ledger, comparison, note
+#import "maps.typ" as maps
 #show: deck
 #set document(title: "TraceTriage — An eBPF IDS for a small Debian host")
 
@@ -15,10 +16,7 @@
 
 = Why an agent?  /  1 of 3
 #claim[One alert can have two explanations.]
-#rows(
-  ([Approved job: eight destinations], [Fan-out alert]),
-  ([Unapproved job: eight destinations], [Fan-out alert]),
-)
+#maps.ambiguity
 #note[The threshold captures behavior. Triage asks whether that behavior was authorized.]
 
 = Why an agent?  /  2 of 3
@@ -31,32 +29,24 @@
 #note[Structured control: the same eight fan-out alerts; at most two reads per case.]
 
 = Why an agent?  /  3 of 3
-#claim[The active plan determines what to read.]
-#rows(
-  ([“The withdrawal was retracted.”], [Check the release ledger]),
-  ([“The rescue tool replaced the preview.”], [Check process ancestry]),
-  ([“Neither account is confirmed.”], [Hold for review]),
-)
-#note[Policy: match previews to a release and rescue tools to a parent. Pi picks the check that applies.]
+#claim[Which policy actually governed the release?]
+#maps.promotion
+#note[Held-out example: an operator mentions an “override” in all three handoffs.]
 
 = System architecture
 #claim[Alerts stay local. Triage runs off-host.]
-#lanes(
-  lane([DEBIAN VPS], [Kernel events], [Local rules], [Immediate warning]),
-  lane([EXPORT], [Fan-out only], [Pseudonymized case]),
-  lane([ANALYST], [Pi selects evidence], [Code verifies], [Case outcome]),
-)
-#note[Parent and canary warnings stay on the host. Model latency never delays a local alert.]
+#maps.architecture
+#note[Kernel probes → host detector. Only the dashed fan-out export crosses to the analyst machine.]
 
-= Technology stack
-#claim[Each layer has one job.]
-#ledger(([Layer], [Technology], [Responsibility]),
-  ([Kernel], [C · CO-RE eBPF], [Observe exec, connect, openat]),
-  ([Debian host], [libbpf · Python], [Drain events and apply rules]),
-  ([Analyst], [Node.js · Pi agent core], [Choose a verifier or hold]),
-  ([Replay], [Deterministic JavaScript], [Match receipt to authorization]),
-)
-#note[One 1 MiB ring connects kernel and host. Only the analyst needs model access.]
+= A case in time
+#claim[The warning comes before the full record.]
+#maps.window
+#note[Distinct IP/port pairs count once. A repeat visit to the same peer does not advance the threshold.]
+
+= Who decides?
+#claim[Pi asks the question. Code checks the proof.]
+#maps.receipt-gate
+#note[Binding asks: “Does this record belong to this authorization?”]
 
 = Test 1  /  Local detection
 #claim[All three anomaly rules fired on Debian.]
@@ -76,12 +66,8 @@
 
 = Test 3  /  Evidence selection
 #claim[Hold the verifier fixed. Vary the router.]
-#lanes(
-  lane([INPUT], [144 VPS alerts], [Synthetic handoffs and receipts]),
-  lane([SPLIT], [8 development families], [16 held-out families]),
-  lane([SCORE], [64 paired views + 16 ambiguous], [80 choices]),
-)
-#note[One handoff read → one of eight verifiers or hold. Each paired view has opposite receipt outcomes.]
+#maps.paired-test
+#note[Real VPS alerts; synthetic handoffs, receipts and labels. Calibration used eight separate families.]
 
 = Test 3  /  Routing accuracy
 #claim[Both models chose evidence more accurately.]
@@ -89,22 +75,6 @@
   ([TF-IDF policy], 46, [46/80]), ([Pi · DeepSeek], 68, [68/80]), ([Pi · GPT], 80, [80/80]),
 ), [+27.5 pp], [DeepSeek over code])
 #note[Family-bootstrap 95% interval: +16.25 to +37.5 points. GPT used the same holdout.]
-
-= Test 3  /  Review workload
-#claim[Better routing left fewer routine alerts open.]
-#comparison([Routine alerts retained (64 routine incidents)], (0, 16, 32, 48, 64), (
-  ([TF-IDF policy], 31, [31]), ([Pi · DeepSeek], 8, [8]), ([Pi · GPT], 0, [0]),
-), [23 fewer], [left for review])
-#note[Explicit anomaly flags rose from 33 to 56 of 64 with DeepSeek. Unverified cases stayed in review.]
-
-= Test 3  /  Triage cost
-#claim[Model selection takes seconds off-host.]
-#ledger(([Router], [Selection P95], [Correct holds on ambiguous views]),
-  ([Calibrated TF-IDF], [0.69 ms], [13 of 16]),
-  ([DeepSeek V4.1 Flash], [3.43 s], [12 of 16]),
-  ([GPT-6.2 Sol], [4.70 s], [16 of 16]),
-)
-#note[Live timings include the model gateway. All 16 ambiguous cases remained open in every arm.]
 
 = Project verdict
 #claim[TraceTriage met the Suggestion 2 brief.]
@@ -114,4 +84,30 @@
   ([Measure overhead], [Workload P95: +4.14 ms], [Met]),
   ([Extend triage with Pi], [DeepSeek: 68/80 vs. 46/80], [Gain on holdout]),
 )
-#note[Use rules for detection, code for explicit policy, and Pi when the next check depends on prose.]
+#note[Keep the warning on the host. Spend a model call only when prose determines the next check.]
+
+= Reference A  /  Display only
+#claim[Better routing left fewer routine alerts open.]
+#comparison([Routine alerts retained (64 routine incidents)], (0, 16, 32, 48, 64), (
+  ([TF-IDF policy], 31, [31]), ([Pi · DeepSeek], 8, [8]), ([Pi · GPT], 0, [0]),
+), [23 fewer], [left for review])
+#note[Explicit anomaly flags rose from 33 to 56 of 64 with DeepSeek. Unverified cases stayed in review.]
+
+= Reference B  /  Display only
+#claim[Model selection takes seconds off-host.]
+#ledger(([Router], [Selection P95], [Correct holds on ambiguous views]),
+  ([Calibrated TF-IDF], [0.69 ms], [13 of 16]),
+  ([DeepSeek V4.1 Flash], [3.43 s], [12 of 16]),
+  ([GPT-6.2 Sol], [4.70 s], [16 of 16]),
+)
+#note[Live timings include the model gateway. All 16 ambiguous cases remained open in every arm.]
+
+= Reference C  /  Display only
+#claim[Which record can answer which question?]
+#ledger(([Verifier], [What it proves], [Verifier], [What it proves]),
+  ([Ancestry], [Launching executable], [Identity], [Acting principal]),
+  ([Network], [Destination owner], [Backup], [Snapshot origin]),
+  ([Rollout], [Deployed revision], [Calendar], [Effective window]),
+  ([Scheduler], [Queue reservation], [Approval], [Delegated sign-off]),
+)
+#note[The semantic replay models these sources with fixtures. Each decision can open at most one.]

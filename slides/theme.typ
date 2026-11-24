@@ -1,5 +1,6 @@
 #import "@preview/touying:0.8.0": config-colors, config-common, config-page, themes
 #import "@preview/lilaq:0.6.0" as lq
+#import "@preview/fletcher:0.5.8" as fl
 #import themes.simple: simple-theme, title-slide
 
 #let primary = rgb("#49459B")
@@ -28,7 +29,7 @@
 #let deck(body) = {
   show: simple-theme.with(
     aspect-ratio: "16-9", header-right: [CSIT5730  /  SUGGESTION 2],
-    footer: [TraceTriage], subslide-preamble: none,
+    footer: [TraceTriage], footer-right: context counter(page).display("1 / 1", both: true), subslide-preamble: none,
     config-common(slide-level: 1, new-section-slide-fn: none),
     config-colors(primary: primary, neutral-light: secondary),
     config-page(fill: surface, margin: (x: 5 * unit, top: 7 * unit, bottom: 5 * unit)),
@@ -37,7 +38,7 @@
   body
 }
 
-#let cover(title, subtitle) = title-slide(config: config-page(fill: primary))[
+#let cover(title, subtitle) = title-slide(config: config-page(fill: primary) + config-common(freeze-slide-counter: false))[
   #align(left, stack(dir: ttb, spacing: 2 * unit,
     chip([CSIT5730  /  SUGGESTION 2]), display(title),
     role(28pt, "regular", on-primary, subtitle),
@@ -50,14 +51,19 @@
 ))
 #let flow(..items) = grid(columns: items.pos().map(_ => 1fr).intersperse(auto),
   gutter: unit / 2, align: horizon, ..items.pos().intersperse(arrow))
-#let rows(..pairs) = stack(dir: ttb, spacing: unit, ..pairs.pos().map(pair => panel(
-  grid(columns: (1.45fr, auto, 1fr), column-gutter: 2 * unit, align: horizon,
-    body-type(pair.first()), arrow, role(20pt, "semibold", primary, pair.last())),
-)))
-#let lane(tag, ..steps) = panel(grid(columns: (auto, 1fr), gutter: 2 * unit, align: horizon,
-  chip(tag), align(center, steps.pos().map(body-type).intersperse(box(inset: (x: unit), arrow)).sum()),
+#let map-diagram(..parts) = align(center, fl.diagram(
+  spacing: (5 * unit, 5.5 * unit), node-shape: rect, node-corner-radius: unit,
+  node-inset: unit, edge-stroke: 1.5pt + primary, label-size: 12pt, ..parts,
 ))
-#let lanes(..items) = stack(dir: ttb, spacing: unit, ..items.pos())
+#let station(pos, title, detail: none, kind: "step") = {
+  let (fill, ink) = (step: (surface-container, on-surface), decision: (primary-container, primary),
+    outcome: (tertiary-container, tertiary), hold: (rgb("#FFE3BC"), rgb("#633C00"))).at(kind)
+  fl.node(pos, align(center, stack(dir: ttb, spacing: unit / 2,
+    role(18pt, "semibold", ink, title), if detail != none { role(14pt, "regular", on-surface, detail) })),
+    fill: fill, stroke: 0.7pt + ink.transparentize(55%))
+}
+#let link-nodes(from, to, optional: false) = fl.edge(from, to, if optional { "--|>" } else { "-|>" })
+#let zone(..cells) = fl.node(enclose: cells.pos(), inset: unit, stroke: (paint: outline, dash: "dashed"), fill: none)
 #let ledger(headings, ..entries) = table(
   columns: headings.map(_ => auto), align: left + horizon, stroke: none,
   inset: (x: 2 * unit, y: 1.3 * unit),
