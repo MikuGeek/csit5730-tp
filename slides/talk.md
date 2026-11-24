@@ -1,14 +1,14 @@
 # TraceTriage · ten-minute speaker guide
 
-Use PDF pages (including the cover). Pointing cues are in italics. Finish on page 13; pages 14–16 are display-only. Times include pauses to let the audience follow the arrows.
+Use PDF pages (including the cover). Pointing cues are in italics. Speak to the headline and main visual. The lower examples and control conditions are for the audience to scan; use one if a question comes up rather than narrating every cell. Finish on page 13; pages 14–16 are display-only. Times include pauses to let the audience follow the arrows.
 
 ### 01 · 0:00–0:20 · TraceTriage
 
 Imagine getting a warning that one process just contacted eight different destinations. Would you wake someone up? On a small server we can establish that the connections were attempted. What we cannot read from the kernel is whether someone approved the job. That distinction drives this project.
 
-### 02 · 0:20–0:50 · Project brief
+### 02 · 0:20–0:50 · What can the host decide?
 
-Suggestion 2 asks for a working eBPF intrusion detector. We have to observe system events, combine them into one detector, warn a user, and measure what that costs. Our target is a Debian host with about a gigabyte of RAM. The assignment does not require a language model. So our starting point was a useful local detector; any extra analysis has to earn its place.
+We chose eBPF because the kernel sees each connection attempt as it happens. On a Debian host with one gigabyte of RAM, we can count destinations and warn as soon as one process reaches eight in ten seconds. But would a ninth connection tell us who approved the job? That takes a different kind of evidence. So we measure the cost of the warning first, then test whether looking beyond the host helps.
 
 ### 03 · 0:50–1:30 · Two causes, one alert
 
@@ -50,9 +50,9 @@ On the Debian VPS we exercised all three rules with isolated fixture processes. 
 
 *Start at the left bar.* This baseline is more than a keyword list: it combines word and character similarity, clause matching, uncertainty rules and a tuned abstention threshold. It picked the right source or hold on 46 of 80 views. DeepSeek got 68. On the same individual views, DeepSeek succeeded where code failed 27 times, and code succeeded where DeepSeek failed five times. The net is 22 more correct choices, or 27.5 percentage points. We resampled families rather than counting small paraphrases as independent evidence; the interval stayed above zero. GPT got all eighty on this same holdout. What changed for an analyst? With DeepSeek, routine alerts left open fell from 31 to eight, and explicit anomaly flags rose from 33 to 56. The price was time: 3.43 seconds at P95 against less than a millisecond for code. That trade makes sense for optional replay, not for the immediate warning.
 
-### 13 · 9:15–10:00 · Answer the original brief
+### 13 · 9:15–10:00 · Answer the design question
 
-*Return to the first three rows.* We built the requested host IDS: three event types observed, three working warning rules, and measured overhead on the target machine. The last row answers a narrower question. If policy explicitly names a record, deterministic routing already solves it. If a human handoff determines which policy applied, the model chose evidence more accurately in our controlled test. The next useful test would use independently collected operator handoffs and real authorization records. The design decision I would keep is the boundary: use the kernel to observe, use rules to warn, and use Pi only to decide which proof to ask for. *Stop here for questions.*
+*Return to the first three rows.* What could the host decide on its own? It spotted all three behaviors we set out to detect, and we measured the cost on the target machine. The last row answers a narrower question. If policy explicitly names a record, deterministic routing already solves it. If a human handoff determines which policy applied, the model chose evidence more accurately in our controlled test. The next useful test would use independently collected operator handoffs and real authorization records. The design decision I would keep is the boundary: use the kernel to observe, use rules to warn, and use Pi only to decide which proof to ask for. *Stop here for questions.*
 
 ### Display only · outside the ten minutes
 
