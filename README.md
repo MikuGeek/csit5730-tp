@@ -2,6 +2,8 @@
 
 CSIT5730 Suggestion 2: a host IDS for a 1 GiB Debian VPS, with an optional off-host triage agent. See the [assignment](./PROJECT.md), [project outline](./OUTLINE.md), [initial VPS results](./EVALUATION.md), and [semantic routing evaluation](./SEMANTIC-EVALUATION.md).
 
+Course presentation: [Touying source](./slides/main.typ) · [build instructions](./ENVIRONMENT.md#build-the-slides).
+
 ## Data Flow
 
 - Three CO-RE tracepoints → 1 MiB eBPF ring buffer → libbpf reader → local detector. The VPS needs neither Node.js nor inference access.
