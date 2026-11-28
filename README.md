@@ -82,6 +82,20 @@ node analyst/semantic-replay.mjs --capture results/semantic-vps/capture.jsonl \
 
 Use `--split dev` (no capture needed) to try a provider without using the holdout. The default holdout includes 16 disjoint scenario families; use the reported corpus fingerprint to reproduce the same labels. The VPS alerts are real, but the incident narratives, labels, and the eight verifier receipts are controlled analyst-side fixtures, not real infrastructure integrations. The original local detection path is unchanged.
 
+## Multi-Verifier Handoff Experiment
+
+Pi makes one selection call per synthetic handoff and returns a set of verifier names. The host checks the corresponding receipt fixtures against the case authorization. Every required check needs a conforming, bound receipt for an `expected` verdict. A bound receipt that fails its check yields `suspicious`. Cases with missing evidence or no established requirements go to review.
+
+```sh
+npm run --silent semantic:multi > multi-baseline.json
+# Set TRIAGE_BASE_URL, TRIAGE_MODEL, and TRIAGE_API_KEY as for live Analyst Replay.
+npm run --silent semantic:multi -- --live > multi-live.json
+```
+
+The offline command runs the all-eight control. The live command adds Pi's results for the same 32 handoffs. Each of the 24 resolvable handoffs has two receipt variants with the same model input. The remaining eight have insufficient information. The report scores exact set matches, extra and missing checks, and verdict accuracy. It distinguishes anomalies sent to review from anomalies marked `expected`. These are simulated triage outcomes on authored handoffs. The experiment runs on the analyst machine.
+
+In one run with DeepSeek V4 Pro (`deepseek-v4-pro`, thinking disabled in the API request), Pi exactly matched the required set in **17/32** handoffs: 5/12 single-check, 8/12 compound, and 4/8 with insufficient information. It selected 21 extra checks across 15 handoffs and omitted zero required checks. Receipt verification produced 56/56 correct verdicts, including 24/24 explicit suspicious verdicts. The all-eight control also reached 56/56 correct verdicts, with 0/32 exact set matches. Four handoffs with insufficient information still elicited tool selections from Pi. Receipt verification sent all eight such cases to review.
+
 ## Limitations
 
 - The detector sees successful execs and syscall attempts, not connection outcomes or file contents. It does not cover relative canary paths, other open APIs, or processes outside the configured cgroup. Basename matching is a policy heuristic, not executable identity verification.
